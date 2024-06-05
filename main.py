@@ -16,37 +16,43 @@ def main():
     """
     Main function to handle user registration, token generation, and token verification.
     """
-    # Create users table if it doesn't exist
-    c.execute(
-        """
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL
-    )
-    """
-    )
-    conn.commit()
-
-    # Infinite loop to handle user actions
-    while True:
-        action = input(
-            "Enter 'ru' to register user, 'gt' to get token, 'vt' to verify token: "
+    try:
+        # Create users table if it doesn't exist
+        c.execute(
+            """
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL
         )
-        if action == "ru":
-            username = input("Username: ")
-            password = input("Password: ")
-            register_user(username, password)
-        elif action == "gt":
-            username = input("Username: ")
-            password = input("Password: ")
-            token = get_token(username, password)
-            print("Token: ", token)
-        elif action == "vt":
-            token = input("Token: ")
-            verify_token(token)
-        else:
-            print("Invalid action! Please try again.")
+        """
+        )
+        conn.commit()
+
+        # Infinite loop to handle user actions
+        while True:
+            action = input(
+                "Enter 'ru' to register user, 'gt' to get token, 'vt' to verify token, 'exit' to exit: "
+            )
+            if action == "ru":
+                username = input("Username: ")
+                password = input("Password: ")
+                register_user(username, password)
+            elif action == "gt":
+                username = input("Username: ")
+                password = input("Password: ")
+                token = get_token(username, password)
+                print("Token: ", token)
+            elif action == "vt":
+                token = input("Token: ")
+                verify_token(token)
+            elif action == "exit":
+                break
+            else:
+                print("Invalid action! Please try again.")
+    finally:
+        # Close the connection when done
+        conn.close()
 
 
 def register_user(username, password):
